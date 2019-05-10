@@ -17,25 +17,41 @@
             report.prepend(p);
         }
 
+        function reportSelected(selectElement)
+        {
+            const index = selectElement.selectedIndex
+            reportEvent("Select field value changed: " +
+                        "[ selected index: " + index +
+                        ", selected value: " + selectElement.value + "]"
+            )
+        }
+
         window.onload = function () {
+
+            const select1 = document.querySelector("#select1")
+
             const radio1 = document.querySelector("#radio1");
             radio1.onchange = function () {
                 reportEvent("Option 1 selected: " + !!radio1.checked)
+                reportSelected(select1)
             };
 
             const radio2 = document.querySelector("#radio2");
             radio2.onchange = function () {
                 reportEvent("Option 2 selected: " + !!radio2.checked)
+                reportSelected(select1)
             };
 
             const checkbox = document.querySelector("input[type=checkbox]");
             checkbox.onchange = function () {
                 reportEvent("Checkbox selected: " + !!checkbox.checked)
+                reportSelected(select1)
             };
 
             const field = document.querySelector("input[type=text]");
             field.onchange = function () {
                 reportEvent("Input field value changed: " + field.value)
+                reportSelected(select1)
             };
 
             // field.oninput = function () {
@@ -45,6 +61,14 @@
             const area = document.querySelector("textarea");
             area.onchange = function () {
                 reportEvent("Input field value changed: " + area.value)
+            }
+
+
+
+            reportSelected(select1)
+
+            select1.onchange = function () {
+                reportSelected(select1)
             }
         }
 
@@ -75,6 +99,17 @@
     <label>
         <input type="checkbox"/>
     </label>Checkbox
+
+    <br/>
+    <br/>
+
+    <label>Select option:</label>
+    <select id="select1">
+        <option value="value1" selected>text1</option>
+        <option value="value2">text2</option>
+        <option value="value3">text3</option>
+        <option value="value4">text4</option>
+    </select>
 
     <br/>
     <br/>

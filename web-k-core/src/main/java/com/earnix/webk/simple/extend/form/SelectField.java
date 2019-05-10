@@ -19,19 +19,20 @@
  */
 package com.earnix.webk.simple.extend.form;
 
-import com.earnix.webk.runtime.dom.impl.select.Elements;
 import com.earnix.webk.layout.LayoutContext;
 import com.earnix.webk.render.BlockBox;
+import com.earnix.webk.runtime.dom.HTMLCollection;
 import com.earnix.webk.runtime.dom.impl.ElementImpl;
 import com.earnix.webk.runtime.dom.impl.NodeImpl;
+import com.earnix.webk.runtime.dom.impl.select.Elements;
+import com.earnix.webk.runtime.html.HTMLSelectElement;
 import com.earnix.webk.simple.extend.XhtmlForm;
 import com.earnix.webk.util.GeneralUtil;
 import com.earnix.webk.util.XHTMLUtils;
+import lombok.val;
 
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
+import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public class SelectField extends FormField {
     public JComponent create() {
         List<NameValuePair> optionList = createList();
         if (shouldRenderAsList()) {
-            int size = 0;
+            int size = 4;
             if (hasAttribute("size")) {
                 size = GeneralUtil.parseIntRelaxed(getAttribute("size"));
             }
@@ -53,9 +54,25 @@ public class SelectField extends FormField {
             JScrollPane scrollPane = SwingComponentFactory.getInstance().createScrollPane(this);
             scrollPane.setViewportView(select);
             return scrollPane;
-        } else {
-            return SwingComponentFactory.getInstance().createComboBox(this, optionList);
         }
+        else {
+            JComboBox comboBox = SwingComponentFactory.getInstance().createComboBox(this, optionList);
+            comboBox.addItemListener(listener -> {
+                if (listener.getStateChange() == ItemEvent.SELECTED)
+                    singleSelectionChanged(listener);
+            });
+            return comboBox;
+        }
+    }
+
+    private void singleSelectionChanged(ItemEvent listener)
+    {
+        HTMLSelectElement selectElement = getSelectElement();
+        JComboBox select = (JComboBox) getComponent();
+        long selectedIndex = select.getSelectedIndex();
+        selectElement.selectedIndex().set(selectedIndex);
+//        val scriptContext = getContext().getSharedContext().getCanvas().getScriptContext();
+//        scriptContext.getEventManager().onchange(getElement());
     }
 
     @Override
@@ -90,7 +107,7 @@ public class SelectField extends FormField {
             // that attribute.
             int[] indices = getOriginalState().getSelectedIndices();
             if (indices.length == 0) {
-                select.setSelectedIndex(0);
+                select.setSelectedIndex(-1);
             } else {
                 select.setSelectedIndex(indices[indices.length - 1]);
             }
@@ -111,15 +128,8 @@ public class SelectField extends FormField {
             }
             return submitValues.toArray(new String[0]);
         } else {
-            JComboBox select = (JComboBox) getComponent();
-            NameValuePair selectedValue = (NameValuePair) select.getSelectedItem();
-            if (selectedValue != null) {
-                if (selectedValue.getValue() != null) {
-                    return new String[]{selectedValue.getValue()};
-                }
-            }
+            return new String[]{getSelectElement().value().get()};
         }
-        return new String[]{};
     }
 
     private List<NameValuePair> createList() {
@@ -154,7 +164,11 @@ public class SelectField extends FormField {
     }
 
     private boolean shouldRenderAsList() {
-        return XHTMLUtils.isTrue(getElement(), "multiple");
+        return getSelectElement().multiple();
+    }
+
+    private HTMLSelectElement getSelectElement(){
+        return (HTMLSelectElement)getElement();
     }
 
     @Override
