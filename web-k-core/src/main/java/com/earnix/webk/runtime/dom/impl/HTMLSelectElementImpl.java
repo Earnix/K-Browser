@@ -50,7 +50,7 @@ public class HTMLSelectElementImpl extends ElementImpl implements HTMLSelectElem
 					{
 						option.setAttribute("selected", "true");
 					}
-					else
+					else if (option.hasAttribute("selected"))
 					{
 						option.removeAttribute("selected");
 					}

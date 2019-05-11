@@ -33,25 +33,21 @@
             const radio1 = document.querySelector("#radio1");
             radio1.onchange = function () {
                 reportEvent("Option 1 selected: " + !!radio1.checked)
-                reportSelected(select1)
             };
 
             const radio2 = document.querySelector("#radio2");
             radio2.onchange = function () {
                 reportEvent("Option 2 selected: " + !!radio2.checked)
-                reportSelected(select1)
             };
 
             const checkbox = document.querySelector("input[type=checkbox]");
             checkbox.onchange = function () {
                 reportEvent("Checkbox selected: " + !!checkbox.checked)
-                reportSelected(select1)
             };
 
             const field = document.querySelector("input[type=text]");
             field.onchange = function () {
                 reportEvent("Input field value changed: " + field.value)
-                reportSelected(select1)
             };
 
             // field.oninput = function () {
@@ -63,10 +59,7 @@
                 reportEvent("Input field value changed: " + area.value)
             }
 
-
-
             reportSelected(select1)
-
             select1.onchange = function () {
                 reportSelected(select1)
             }
@@ -109,6 +102,16 @@
         <option value="value2">text2</option>
         <option value="value3">text3</option>
         <option value="value4">text4</option>
+    </select>
+
+    <br/>
+    <br/>
+
+    <select id="select2" multiple >
+        <option value="value10" selectedd>text10</option>
+        <option value="value20">text20</option>
+        <option value="value30">text30</option>
+        <option value="value40" selected>text40</option>
     </select>
 
     <br/>

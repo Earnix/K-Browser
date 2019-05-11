@@ -33,11 +33,14 @@ import lombok.val;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class SelectField extends FormField {
+
+    private ItemListener listener;
 
     public SelectField(ElementImpl e, XhtmlForm form, LayoutContext context, BlockBox box) {
         super(e, form, context, box);
@@ -54,25 +57,23 @@ public class SelectField extends FormField {
             JScrollPane scrollPane = SwingComponentFactory.getInstance().createScrollPane(this);
             scrollPane.setViewportView(select);
             return scrollPane;
-        }
-        else {
+        } else {
             JComboBox comboBox = SwingComponentFactory.getInstance().createComboBox(this, optionList);
-            comboBox.addItemListener(listener -> {
-                if (listener.getStateChange() == ItemEvent.SELECTED)
-                    singleSelectionChanged(listener);
+            comboBox.addItemListener(listener = e -> {
+                if (e.getStateChange() == ItemEvent.SELECTED)
+                    singleSelectionChanged(e);
             });
             return comboBox;
         }
     }
 
-    private void singleSelectionChanged(ItemEvent listener)
-    {
+    private void singleSelectionChanged(ItemEvent event) {
         HTMLSelectElement selectElement = getSelectElement();
-        JComboBox select = (JComboBox) getComponent();
-        long selectedIndex = select.getSelectedIndex();
+        JComboBox comboBox = (JComboBox)event.getSource();
+        long selectedIndex = comboBox.getSelectedIndex();
         selectElement.selectedIndex().set(selectedIndex);
-//        val scriptContext = getContext().getSharedContext().getCanvas().getScriptContext();
-//        scriptContext.getEventManager().onchange(getElement());
+        val scriptContext = getContext().getSharedContext().getCanvas().getScriptContext();
+        scriptContext.getEventManager().onchange(getElement());
     }
 
     @Override
@@ -101,6 +102,7 @@ public class SelectField extends FormField {
             }
         } else {
             JComboBox select = (JComboBox) getComponent();
+            select.removeItemListener(listener);
             // This looks strange, but basically since this is a single select, and
             // someone might have put selected="selected" on more than a single option
             // I believe that the correct play here is to select the _last_ option with
@@ -111,6 +113,7 @@ public class SelectField extends FormField {
             } else {
                 select.setSelectedIndex(indices[indices.length - 1]);
             }
+            select.addItemListener(listener);
         }
     }
 
@@ -167,8 +170,8 @@ public class SelectField extends FormField {
         return getSelectElement().multiple();
     }
 
-    private HTMLSelectElement getSelectElement(){
-        return (HTMLSelectElement)getElement();
+    private HTMLSelectElement getSelectElement() {
+        return (HTMLSelectElement) getElement();
     }
 
     @Override
