@@ -26,9 +26,22 @@
             )
         }
 
+        function reportMultiSelected(selectElement)
+        {
+            const options  = selectElement.selectedOptions;
+            const vals = [];
+            for(i=0;i<options.length;i++)
+            {
+                vals.push(options.item(i).value)
+            }
+            reportEvent("Select-multi field value changed: [" + vals + "]"
+            )
+        }
+
         window.onload = function () {
 
             const select1 = document.querySelector("#select1")
+            const select2 = document.querySelector("#select2")
 
             const radio1 = document.querySelector("#radio1");
             radio1.onchange = function () {
@@ -62,6 +75,11 @@
             reportSelected(select1)
             select1.onchange = function () {
                 reportSelected(select1)
+            }
+
+            reportMultiSelected(select2)
+            select2.onchange = function () {
+                reportMultiSelected(select2)
             }
         }
 
@@ -107,11 +125,14 @@
     <br/>
     <br/>
 
-    <select id="select2" multiple >
-        <option value="value10" selectedd>text10</option>
-        <option value="value20">text20</option>
-        <option value="value30">text30</option>
-        <option value="value40" selected>text40</option>
+    <label>Select multiple option:</label>
+    <select id="select2" multiple size="5" >
+        <option value="multi1" selected>multi1</option>
+        <option value="multi2">multi2</option>
+        <option value="multi3">multi3</option>
+        <option value="multi4" selected>multi4</option>
+        <option value="multi5" selected>multi5</option>
+        <option value="multi6" selected>multi6 option</option>
     </select>
 
     <br/>

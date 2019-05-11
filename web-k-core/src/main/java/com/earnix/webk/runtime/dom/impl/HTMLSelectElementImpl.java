@@ -6,6 +6,7 @@ import com.earnix.webk.runtime.dom.impl.parser.Tag;
 import com.earnix.webk.runtime.dom.impl.select.Elements;
 import com.earnix.webk.runtime.html.HTMLSelectElement;
 import com.earnix.webk.runtime.web_idl.Attribute;
+import com.earnix.webk.runtime.web_idl.DOMString;
 import com.earnix.webk.util.XHTMLUtils;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -89,5 +90,10 @@ public class HTMLSelectElementImpl extends ElementImpl implements HTMLSelectElem
 	@Override public boolean multiple()
 	{
 		return hasAttribute("multiple");
+	}
+
+	@Override
+	public @DOMString String type() {
+		return multiple() ? "select-multiple" : "select-one";
 	}
 }

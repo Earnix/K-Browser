@@ -4,18 +4,18 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+import javax.swing.ListSelectionModel;
 import java.util.List;
 
 @Slf4j
@@ -62,17 +62,16 @@ public class DefaultSwingComponentFactory extends SwingComponentFactory {
     }
 
     @Override
-    public JTable createMultipleOptionsList(FormField field, List<NameValuePair> optionList, int size) {
-        TableModel tableModel = new DefaultTableModel(size, 1);
-        int row = 0;
+    public JList createMultipleOptionsList(FormField field, List<NameValuePair> optionList, int size) {
+        DefaultListModel listModel = new DefaultListModel();
         for (NameValuePair nameValuePair : optionList) {
-            tableModel.setValueAt(nameValuePair.getName(), row, 0);
+            listModel.addElement(nameValuePair.getName());
         }
 
-        JTable table = new JTable(tableModel);
-        table.setTableHeader(null);
-
-        return table;
+        JList multipleSelect = new JList(listModel);
+        multipleSelect.setVisibleRowCount(size);
+        multipleSelect.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        return multipleSelect;
     }
 
     @Override
@@ -102,6 +101,4 @@ public class DefaultSwingComponentFactory extends SwingComponentFactory {
     public void showErrorDialog(String message, JComponent parent) {
         JOptionPane.showMessageDialog(parent, message, "Error", JOptionPane.WARNING_MESSAGE);
     }
-    
-    
 }
