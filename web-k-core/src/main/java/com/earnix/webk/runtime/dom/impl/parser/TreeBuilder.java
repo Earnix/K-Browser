@@ -2,6 +2,7 @@ package com.earnix.webk.runtime.dom.impl.parser;
 
 import com.earnix.webk.runtime.dom.impl.helper.Validate;
 import com.earnix.webk.runtime.dom.impl.nodes.AttributesModel;
+import com.earnix.webk.runtime.dom.impl.HTMLSelectElementImpl;
 import com.earnix.webk.runtime.html.canvas.impl.HTMLCanvasElementImpl;
 import com.earnix.webk.runtime.dom.impl.ElementImpl;
 import com.earnix.webk.runtime.dom.impl.NodeImpl;
@@ -98,6 +99,8 @@ public abstract class TreeBuilder {
         switch (tag.getName().trim().toLowerCase()) {
             case "canvas":
                 return new HTMLCanvasElementImpl(tag, baseUri, attributes);
+            case "select":
+                return new HTMLSelectElementImpl(tag, baseUri, attributes);
             default: return new ElementImpl(tag, baseUri, attributes);
         }
     }

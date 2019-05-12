@@ -19,24 +19,33 @@
  */
 package com.earnix.webk.simple.extend.form;
 
-import com.earnix.webk.runtime.dom.impl.select.Elements;
 import com.earnix.webk.layout.LayoutContext;
 import com.earnix.webk.render.BlockBox;
+import com.earnix.webk.runtime.dom.Element;
+import com.earnix.webk.runtime.dom.HTMLCollection;
 import com.earnix.webk.runtime.dom.impl.ElementImpl;
 import com.earnix.webk.runtime.dom.impl.NodeImpl;
+import com.earnix.webk.runtime.html.HTMLSelectElement;
 import com.earnix.webk.simple.extend.XhtmlForm;
 import com.earnix.webk.util.GeneralUtil;
-import com.earnix.webk.util.XHTMLUtils;
+import lombok.val;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class SelectField extends FormField {
+
+    private ItemListener selectOneItemListener;
+    private ListSelectionListener selectMultipleSelectionListener;
 
     public SelectField(ElementImpl e, XhtmlForm form, LayoutContext context, BlockBox box) {
         super(e, form, context, box);
@@ -45,26 +54,63 @@ public class SelectField extends FormField {
     public JComponent create() {
         List<NameValuePair> optionList = createList();
         if (shouldRenderAsList()) {
-            int size = 0;
+            int size = 4;
             if (hasAttribute("size")) {
                 size = GeneralUtil.parseIntRelaxed(getAttribute("size"));
             }
-            JTable select = SwingComponentFactory.getInstance().createMultipleOptionsList(this, optionList, size);
+            JList select = SwingComponentFactory.getInstance().createMultipleOptionsList(this, optionList, size);
+            select.addListSelectionListener(selectMultipleSelectionListener = e-> multipleSelectionChanged(e));
             JScrollPane scrollPane = SwingComponentFactory.getInstance().createScrollPane(this);
             scrollPane.setViewportView(select);
             return scrollPane;
         } else {
-            return SwingComponentFactory.getInstance().createComboBox(this, optionList);
+            JComboBox comboBox = SwingComponentFactory.getInstance().createComboBox(this, optionList);
+            comboBox.addItemListener(selectOneItemListener = e -> {
+                if (e.getStateChange() == ItemEvent.SELECTED)
+                    singleSelectionChanged(e);
+            });
+            return comboBox;
         }
+    }
+
+    private void multipleSelectionChanged(ListSelectionEvent event) {
+        HTMLSelectElement selectElement = getSelectElement();
+        JList list = (JList) event.getSource();
+
+        if (!event.getValueIsAdjusting()) {
+            HTMLCollection options = selectElement.options();
+            for (int index = 0; index < list.getModel().getSize(); index++) {
+                Element item = options.item(index);
+                boolean selected = list.isSelectedIndex(index);
+                boolean itemHasAttribute = item.hasAttribute("selected");
+
+                if (selected && !itemHasAttribute) {
+                    item.setAttribute("selected", "true");
+                } else if (!selected && itemHasAttribute) {
+                    item.removeAttribute("selected");
+                }
+            }
+            val scriptContext = getContext().getSharedContext().getCanvas().getScriptContext();
+            scriptContext.getEventManager().onchange(getElement());
+        }
+    }
+
+    private void singleSelectionChanged(ItemEvent event) {
+        HTMLSelectElement selectElement = getSelectElement();
+        JComboBox comboBox = (JComboBox)event.getSource();
+        long selectedIndex = comboBox.getSelectedIndex();
+        selectElement.selectedIndex().set(selectedIndex);
+        val scriptContext = getContext().getSharedContext().getCanvas().getScriptContext();
+        scriptContext.getEventManager().onchange(getElement());
     }
 
     @Override
     protected FormFieldState loadOriginalState() {
         List<Integer> selectedIndices = new ArrayList();
-        Elements options = getElement().getElementsByTag("option");
-        for (int i = 0; i < options.size(); i++) {
-            ElementImpl option = options.get(i);
-            if (XHTMLUtils.isTrue(option, "selected")) {
+        HTMLCollection options = getSelectElement().options();
+        for (int i = 0; i < options.length(); i++) {
+            Element option = options.item(i);
+            if (option.hasAttribute("selected")) {
                 selectedIndices.add(new Integer(i));
             }
         }
@@ -74,52 +120,43 @@ public class SelectField extends FormField {
     @Override
     protected void applyOriginalState() {
         if (shouldRenderAsList()) {
-            JTable select = (JTable) ((JScrollPane) getComponent()).getViewport().getView();
-            for (int i = 0; i < select.getRowCount(); i++) {
-                select.setValueAt(Boolean.FALSE, i, 0);
-            }
+            JList list = (JList) ((JScrollPane) getComponent()).getViewport().getView();
+
+            list.removeListSelectionListener(selectMultipleSelectionListener);
             int[] selIndices = getOriginalState().getSelectedIndices();
-            for (int i = 0; i < selIndices.length; i++) {
-                select.setValueAt(Boolean.TRUE, selIndices[i], 0);
+            list.clearSelection();
+            for (int index: selIndices) {
+                list.addSelectionInterval(index, index);
             }
+            list.addListSelectionListener(selectMultipleSelectionListener);
         } else {
             JComboBox select = (JComboBox) getComponent();
+            select.removeItemListener(selectOneItemListener);
             // This looks strange, but basically since this is a single select, and
             // someone might have put selected="selected" on more than a single option
             // I believe that the correct play here is to select the _last_ option with
             // that attribute.
             int[] indices = getOriginalState().getSelectedIndices();
             if (indices.length == 0) {
-                select.setSelectedIndex(0);
+                select.setSelectedIndex(-1);
             } else {
-                select.setSelectedIndex(indices[indices.length - 1]);
+                select.setSelectedIndex(indices[0]);
             }
+            select.addItemListener(selectOneItemListener);
         }
     }
 
     protected String[] getFieldValues() {
         if (shouldRenderAsList()) {
-            JTable select = (JTable) ((JScrollPane) getComponent()).getViewport().getView();
+            HTMLCollection options = getSelectElement().selectedOptions();
             List<String> submitValues = new ArrayList<>();
-            for (int i = 0; i < select.getRowCount(); i++) {
-                if (Boolean.TRUE.equals(select.getValueAt(i, 0))) {
-                    NameValuePair pair = (NameValuePair) select.getValueAt(i, 1);
-                    if (pair.getValue() != null) {
-                        submitValues.add(pair.getValue());
-                    }
-                }
+            for (int i = 0; i < options.length(); i++) {
+                submitValues.add(options.item(i).getAttribute("value"));
             }
             return submitValues.toArray(new String[0]);
         } else {
-            JComboBox select = (JComboBox) getComponent();
-            NameValuePair selectedValue = (NameValuePair) select.getSelectedItem();
-            if (selectedValue != null) {
-                if (selectedValue.getValue() != null) {
-                    return new String[]{selectedValue.getValue()};
-                }
-            }
+            return new String[]{getSelectElement().value().get()};
         }
-        return new String[]{};
     }
 
     private List<NameValuePair> createList() {
@@ -154,7 +191,11 @@ public class SelectField extends FormField {
     }
 
     private boolean shouldRenderAsList() {
-        return XHTMLUtils.isTrue(getElement(), "multiple");
+        return getSelectElement().multiple();
+    }
+
+    private HTMLSelectElement getSelectElement() {
+        return (HTMLSelectElement) getElement();
     }
 
     @Override

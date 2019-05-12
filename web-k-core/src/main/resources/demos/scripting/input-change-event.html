@@ -17,7 +17,32 @@
             report.prepend(p);
         }
 
+        function reportSelected(selectElement)
+        {
+            const index = selectElement.selectedIndex
+            reportEvent("Select field value changed: " +
+                        "[ selected index: " + index +
+                        ", selected value: " + selectElement.value + "]"
+            )
+        }
+
+        function reportMultiSelected(selectElement)
+        {
+            const options  = selectElement.selectedOptions;
+            const vals = [];
+            for(i=0;i<options.length;i++)
+            {
+                vals.push(options.item(i).value)
+            }
+            reportEvent("Select-multi field value changed: [" + vals + "]"
+            )
+        }
+
         window.onload = function () {
+
+            const select1 = document.querySelector("#select1")
+            const select2 = document.querySelector("#select2")
+
             const radio1 = document.querySelector("#radio1");
             radio1.onchange = function () {
                 reportEvent("Option 1 selected: " + !!radio1.checked)
@@ -45,6 +70,16 @@
             const area = document.querySelector("textarea");
             area.onchange = function () {
                 reportEvent("Input field value changed: " + area.value)
+            }
+
+            reportSelected(select1)
+            select1.onchange = function () {
+                reportSelected(select1)
+            }
+
+            reportMultiSelected(select2)
+            select2.onchange = function () {
+                reportMultiSelected(select2)
             }
         }
 
@@ -75,6 +110,30 @@
     <label>
         <input type="checkbox"/>
     </label>Checkbox
+
+    <br/>
+    <br/>
+
+    <label>Select option:</label>
+    <select id="select1">
+        <option value="value1" selected>text1</option>
+        <option value="value2">text2</option>
+        <option value="value3">text3</option>
+        <option value="value4">text4</option>
+    </select>
+
+    <br/>
+    <br/>
+
+    <label>Select multiple option:</label>
+    <select id="select2" multiple size="5" >
+        <option value="multi1" selected>multi1</option>
+        <option value="multi2">multi2</option>
+        <option value="multi3">multi3</option>
+        <option value="multi4" selected>multi4</option>
+        <option value="multi5" selected>multi5</option>
+        <option value="multi6" selected>multi6 option</option>
+    </select>
 
     <br/>
     <br/>

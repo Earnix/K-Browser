@@ -12,9 +12,9 @@
         <appender-ref ref="STDOUT"/>
     </root>
 
-    <!--<logger name="com.earnix.webk.runtime" level="error"/>-->
-    <!--<logger name="com.earnix.webk.runtime.web_idl" level="trace"/>-->
-    <!--<logger name="com.earnix.webk.runtime.ui_events" level="info"/>-->
-    <!--<logger name="com.earnix.webk.runtime.domlevel="info"/>-->
+    <logger name="com.earnix.webk.runtime" level="error"/>
+    <logger name="com.earnix.webk.runtime.web_idl" level="trace"/>
+    <logger name="com.earnix.webk.runtime.ui_events" level="info"/>
+    <logger name="com.earnix.webk.runtime.dom" level="info"/>
 
 </configuration>
