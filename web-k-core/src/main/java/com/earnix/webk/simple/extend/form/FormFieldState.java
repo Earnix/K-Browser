@@ -27,6 +27,8 @@ public class FormFieldState {
     private String _value;
     private boolean _checked;
     private int[] _selected;
+    private double scrollTop;
+    private double scrollLeft;
 
     private FormFieldState() {
         _value = "";
@@ -44,6 +46,16 @@ public class FormFieldState {
 
     public int[] getSelectedIndices() {
         return ArrayUtil.cloneOrEmpty(_selected);
+    }
+
+    public double getScrollTop()
+    {
+        return scrollTop;
+    }
+
+    public double getScrollLeft()
+    {
+        return scrollLeft;
     }
 
     public static FormFieldState fromString(String s) {
@@ -73,6 +85,13 @@ public class FormFieldState {
 
         stateObject._selected = indices;
 
+        return stateObject;
+    }
+
+    public static FormFieldState fromList(List list, double scrollTop, double scrollLeft) {
+        FormFieldState stateObject = fromList(list);
+        stateObject.scrollTop = scrollTop;
+        stateObject.scrollLeft = scrollLeft;
         return stateObject;
     }
 }

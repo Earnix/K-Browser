@@ -1,6 +1,7 @@
 package com.earnix.webk.util;
 
 import com.earnix.webk.runtime.dom.impl.ElementImpl;
+import com.earnix.webk.runtime.web_idl.DOMString;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -49,6 +50,22 @@ public class XHTMLUtils {
             val = GeneralUtil.parseIntRelaxed(el.attr(attr));
         }
         return val > 0 ? val : defaultValue;
+    }
+
+    public static Double getDoubleValue(ElementImpl el, String attr, double defaultValue) {
+        Objects.requireNonNull(el);
+        Objects.requireNonNull(attr);
+        @DOMString String value = el.attr(attr);
+        Double result = defaultValue;
+        try {
+            if (value != null) {
+                result = Double.parseDouble(value);
+            }
+        }
+        catch (NumberFormatException ex) {
+            // do nothing as default value assigned already
+        }
+        return result;
     }
 
     public static OptionalInt getOptionalIntValue(ElementImpl el, String attr) {

@@ -4,18 +4,18 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 @Slf4j
@@ -61,16 +61,36 @@ public class DefaultSwingComponentFactory extends SwingComponentFactory {
         return combo;
     }
 
-    @Override
-    public JList createMultipleOptionsList(FormField field, List<NameValuePair> optionList, int size) {
-        DefaultListModel listModel = new DefaultListModel();
-        for (NameValuePair nameValuePair : optionList) {
-            listModel.addElement(nameValuePair.getName());
+    @Override public JTable createMultipleOptionsList(FormField field, List<NameValuePair> optionList, int size)
+    {
+        DefaultTableModel listModel = new DefaultTableModel(optionList.size(), 2)
+        {
+            @Override public Class<?> getColumnClass(int columnIndex)
+            {
+                return columnIndex == 0 ? Boolean.class : super.getColumnClass(columnIndex);
+            }
+
+            @Override public boolean isCellEditable(int row, int column)
+            {
+                return column==0;
+            }
+        };
+
+        for (int i = 0; i < optionList.size(); i++)
+        {
+            NameValuePair nameValuePair = optionList.get(i);
+            listModel.setValueAt(Boolean.FALSE, i, 0);
+            listModel.setValueAt(nameValuePair.getName(), i, 1);
         }
 
-        JList multipleSelect = new JList(listModel);
-        multipleSelect.setVisibleRowCount(size);
-        multipleSelect.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        JTable multipleSelect = new JTable(listModel);
+        multipleSelect.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
+        multipleSelect.getColumnModel().getColumn(0).setWidth(26);
+        multipleSelect.getColumnModel().getColumn(0).setMaxWidth(26);
+        multipleSelect.getColumnModel().getColumn(0).setMinWidth(26);
+        multipleSelect.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        multipleSelect.setTableHeader(null);
+
         return multipleSelect;
     }
 

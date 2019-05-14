@@ -26,16 +26,22 @@ import com.earnix.webk.runtime.dom.HTMLCollection;
 import com.earnix.webk.runtime.dom.impl.ElementImpl;
 import com.earnix.webk.runtime.dom.impl.NodeImpl;
 import com.earnix.webk.runtime.html.HTMLSelectElement;
+import com.earnix.webk.runtime.web_idl.Attribute;
 import com.earnix.webk.simple.extend.XhtmlForm;
 import com.earnix.webk.util.GeneralUtil;
 import lombok.val;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JList;
 import javax.swing.JScrollPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
+import java.awt.Adjustable;
+import java.awt.Dimension;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
@@ -45,7 +51,8 @@ import java.util.Optional;
 public class SelectField extends FormField {
 
     private ItemListener selectOneItemListener;
-    private ListSelectionListener selectMultipleSelectionListener;
+    private TableModelListener tableModelListener;
+    private AdjustmentListener scrollListener;
 
     public SelectField(ElementImpl e, XhtmlForm form, LayoutContext context, BlockBox box) {
         super(e, form, context, box);
@@ -58,10 +65,14 @@ public class SelectField extends FormField {
             if (hasAttribute("size")) {
                 size = GeneralUtil.parseIntRelaxed(getAttribute("size"));
             }
-            JList select = SwingComponentFactory.getInstance().createMultipleOptionsList(this, optionList, size);
-            select.addListSelectionListener(selectMultipleSelectionListener = e-> multipleSelectionChanged(e));
+            JTable select = SwingComponentFactory.getInstance().createMultipleOptionsList(this, optionList, size);
+            select.getModel().addTableModelListener(tableModelListener = e -> tableUpdated(e));
             JScrollPane scrollPane = SwingComponentFactory.getInstance().createScrollPane(this);
             scrollPane.setViewportView(select);
+            Dimension preferredSize = scrollPane.getPreferredSize();
+            scrollPane.setPreferredSize(new Dimension(preferredSize.width, size * select.getRowHeight()));
+            scrollPane.getVerticalScrollBar().addAdjustmentListener(scrollListener = evt -> adjustScrollPosition(evt));
+            scrollPane.getHorizontalScrollBar().addAdjustmentListener(scrollListener);
             return scrollPane;
         } else {
             JComboBox comboBox = SwingComponentFactory.getInstance().createComboBox(this, optionList);
@@ -73,15 +84,27 @@ public class SelectField extends FormField {
         }
     }
 
-    private void multipleSelectionChanged(ListSelectionEvent event) {
-        HTMLSelectElement selectElement = getSelectElement();
-        JList list = (JList) event.getSource();
+    private void adjustScrollPosition(AdjustmentEvent evt)
+    {
+        Adjustable source = evt.getAdjustable();
+        if (evt.getValueIsAdjusting()) {
+            return;
+        }
+        double value = evt.getValue();
+        Attribute<Double> doubleAttribute =
+                source.getOrientation() == Adjustable.VERTICAL ? getElement().scrollTop() : getElement().scrollLeft();
+        doubleAttribute.set(value);
+    }
 
-        if (!event.getValueIsAdjusting()) {
+    private void tableUpdated(TableModelEvent e)
+    {
+        HTMLSelectElement selectElement = getSelectElement();
+        TableModel model = (TableModel) e.getSource();
+        if (e.getType()==TableModelEvent.UPDATE) {
             HTMLCollection options = selectElement.options();
-            for (int index = 0; index < list.getModel().getSize(); index++) {
+            for (int index = 0; index < model.getRowCount(); index++) {
                 Element item = options.item(index);
-                boolean selected = list.isSelectedIndex(index);
+                boolean selected = Boolean.valueOf(model.getValueAt(index, 0).toString());
                 boolean itemHasAttribute = item.hasAttribute("selected");
 
                 if (selected && !itemHasAttribute) {
@@ -114,21 +137,34 @@ public class SelectField extends FormField {
                 selectedIndices.add(new Integer(i));
             }
         }
-        return FormFieldState.fromList(selectedIndices);
+
+        Attribute<Double> scrollTop = getElement().scrollTop();
+        Attribute<Double> scrollLeft = getSelectElement().scrollLeft();
+        return FormFieldState.fromList(selectedIndices, scrollTop.get(), scrollLeft.get());
     }
 
     @Override
     protected void applyOriginalState() {
+        FormFieldState originalState = getOriginalState();
         if (shouldRenderAsList()) {
-            JList list = (JList) ((JScrollPane) getComponent()).getViewport().getView();
+            JScrollPane component = (JScrollPane) getComponent();
+            component.getVerticalScrollBar().removeAdjustmentListener(scrollListener);
+            component.getHorizontalScrollBar().removeAdjustmentListener(scrollListener);
+            JTable table = (JTable) (component).getViewport().getView();
 
-            list.removeListSelectionListener(selectMultipleSelectionListener);
-            int[] selIndices = getOriginalState().getSelectedIndices();
-            list.clearSelection();
+            TableModel model = table.getModel();
+            model.removeTableModelListener(tableModelListener);
+            int[] selIndices = originalState.getSelectedIndices();
             for (int index: selIndices) {
-                list.addSelectionInterval(index, index);
+                model.setValueAt(Boolean.TRUE, index, 0);
             }
-            list.addListSelectionListener(selectMultipleSelectionListener);
+
+            component.getVerticalScrollBar().setValue((int)originalState.getScrollTop());
+            component.getHorizontalScrollBar().setValue((int)originalState.getScrollLeft());
+
+            component.getVerticalScrollBar().addAdjustmentListener(scrollListener);
+            component.getHorizontalScrollBar().addAdjustmentListener(scrollListener);
+            model.addTableModelListener(tableModelListener);
         } else {
             JComboBox select = (JComboBox) getComponent();
             select.removeItemListener(selectOneItemListener);
@@ -136,7 +172,7 @@ public class SelectField extends FormField {
             // someone might have put selected="selected" on more than a single option
             // I believe that the correct play here is to select the _last_ option with
             // that attribute.
-            int[] indices = getOriginalState().getSelectedIndices();
+            int[] indices = originalState.getSelectedIndices();
             if (indices.length == 0) {
                 select.setSelectedIndex(-1);
             } else {

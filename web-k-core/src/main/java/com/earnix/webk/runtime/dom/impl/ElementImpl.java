@@ -41,6 +41,7 @@ import com.earnix.webk.runtime.dom.NodeList;
 import com.earnix.webk.runtime.dom.ShadowRoot;
 import com.earnix.webk.runtime.dom.ShadowRootInit;
 import com.earnix.webk.runtime.html.impl.DocumentImpl;
+import com.earnix.webk.util.XHTMLUtils;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +57,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -645,12 +647,12 @@ public class ElementImpl extends NodeImpl implements HTMLElement {
 
     @Override
     public Attribute<Double> scrollTop() {
-        return null;
+        return new DoubleAttribute("scrollTop");
     }
 
     @Override
     public Attribute<Double> scrollLeft() {
-        return null;
+        return new DoubleAttribute("scrollLeft");
     }
 
     @Override
@@ -2426,6 +2428,26 @@ public class ElementImpl extends NodeImpl implements HTMLElement {
         consumer.accept(this);
         getChildren().forEach(c -> c.walkElementsTree(consumer));
     }
-    
+
+    private class DoubleAttribute implements Attribute<Double> {
+
+        private final String attributeName;
+
+        public DoubleAttribute(String attributeName) {
+            this.attributeName = Objects.requireNonNull(attributeName);
+        }
+
+        @Override public Double get() {
+            return XHTMLUtils.getDoubleValue(ElementImpl.this, attributeName, 0.0);
+        }
+
+        @Override public void set(Double aDouble) {
+            if(aDouble!=null)
+                setAttribute(attributeName, String.valueOf(aDouble));
+            else
+                removeAttribute(attributeName);
+        }
+    }
+
     // endregion
 }
