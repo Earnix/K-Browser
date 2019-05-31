@@ -161,6 +161,12 @@ Web-K provides current Nashorn ES6 features as `let` and `const` support, and al
 * Element.removeAttribute
 * Element.hasAttribute
 * Element.childElementCount
+* HTMLSelectElement.value
+* HTMLSelectElement.selectedIndex
+* HTMLSelectElement.selectedOptions
+* HTMLSelectElement.options
+* HTMLSelectElement.type
+* HTMLSelectElement.multiple
 * Node.parentElement
 * Node.childNodes
 * Node.appendChild
