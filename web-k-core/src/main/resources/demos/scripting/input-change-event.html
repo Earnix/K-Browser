@@ -42,6 +42,7 @@
 
             const select1 = document.querySelector("#select1")
             const select2 = document.querySelector("#select2")
+            const select3 = document.querySelector("#select3")
 
             const radio1 = document.querySelector("#radio1");
             radio1.onchange = function () {
@@ -77,6 +78,11 @@
                 reportSelected(select1)
             }
 
+            reportSelected(select3)
+            select1.onchange = function () {
+                reportSelected(select3)
+            }
+
             reportMultiSelected(select2)
             select2.onchange = function () {
                 reportMultiSelected(select2)
@@ -92,7 +98,7 @@
 <p class="link right-link"><a href="demo:demos/scripting/xmlhttprequest.html">Next Page</a></p>
 <h1>Input change events</h1>
 <p>Web-K supports change listening on input elements.</p>
-<form action="">
+<form action="#">
     <label for="radio1">Option 1
         <input id="radio1" name="option" type="radio"/>
     </label>
@@ -114,9 +120,22 @@
     <br/>
     <br/>
 
-    <label>Select option:</label>
-    <select id="select1">
-        <option value="value1" selected>text1</option>
+    <label>Select option with placeholder:</label>
+    <select id="select1" required>
+        <option value="" selected>Select an option</option>
+        <option value="value1">text1</option>
+        <option value="value2">text2</option>
+        <option value="value3">text3</option>
+        <option value="value4">text4</option>
+    </select>
+
+    <br/>
+    <br/>
+
+
+    <label>Select option without placeholder:</label>
+    <select id="select3" required>
+        <option value="value1">text1</option>
         <option value="value2">text2</option>
         <option value="value3">text3</option>
         <option value="value4">text4</option>
@@ -126,13 +145,13 @@
     <br/>
 
     <label>Select multiple option:</label>
-    <select id="select2" multiple size="5" >
-            <option value="multi1" selected>multi1</option>
+    <select id="select2" multiple size="5" required>
+            <option value="multi1">multi1</option>
             <option value="multi2">multi2</option>
             <option value="multi3">multi3</option>
-            <option value="multi4" selected>multi4</option>
-            <option value="multi5" selected>multi5</option>
-            <option value="multi6" selected>multi6 option</option>
+            <option value="multi4">multi4</option>
+            <option value="multi5">multi5</option>
+            <option value="multi6">multi6 option</option>
     </select>
 
     <br/>
@@ -148,6 +167,7 @@
     <label>Text area
         <textarea style="width: 200px; height: 200px;">Content</textarea>
     </label><br/>
+    <input type="submit" value="Validate fields">
 </form>
 <div id="report"></div>
 </body>

@@ -160,7 +160,7 @@ public class XhtmlForm {
             FormField field = (FormField) entry.getValue();
             val validationError = field.validate();
             if (validationError.isPresent()) {
-                field.getComponent().requestFocus();
+                field.requestFocus();
                 SwingComponentFactory.getInstance().showErrorDialog(validationError.get(), field.getComponent().getRootPane());
                 return;
             } else {

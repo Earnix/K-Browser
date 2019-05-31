@@ -25,6 +25,7 @@ import com.earnix.webk.runtime.dom.Element;
 import com.earnix.webk.runtime.dom.HTMLCollection;
 import com.earnix.webk.runtime.dom.impl.ElementImpl;
 import com.earnix.webk.runtime.dom.impl.NodeImpl;
+import com.earnix.webk.runtime.dom.impl.internal.StringUtil;
 import com.earnix.webk.runtime.html.HTMLSelectElement;
 import com.earnix.webk.runtime.web_idl.Attribute;
 import com.earnix.webk.simple.extend.XhtmlForm;
@@ -191,7 +192,8 @@ public class SelectField extends FormField {
             }
             return submitValues.toArray(new String[0]);
         } else {
-            return new String[]{getSelectElement().value().get()};
+            long selectedIndex = getSelectElement().selectedIndex().get();
+            return selectedIndex < 0 ? new String[0] : new String[] { getSelectElement().value().get()};
         }
     }
 
@@ -234,11 +236,26 @@ public class SelectField extends FormField {
         return (HTMLSelectElement) getElement();
     }
 
-    @Override
-    protected Optional<String> validateInternal() {
-        if (isRequired() && shouldRenderAsList() && getFieldValues().length == 0) {
-            return Optional.of("At least one option must be selected");
+    @Override protected Optional<String> validateInternal()
+    {
+        String alertMessage = null;
+        if (isRequired()) {
+            if (getSelectElement().multiple() && getFieldValues().length == 0) {
+                alertMessage = "Please select at least one item in the list.";
+            } else if (!getSelectElement().multiple() && StringUtil.isBlank(getSelectElement().value().get())) {
+                alertMessage = "Please select an item in the list.";
+            }
         }
-        return Optional.empty();
+        return Optional.ofNullable(alertMessage);
+    }
+
+    @Override public void requestFocus()
+    {
+        HTMLSelectElement selectElement = getSelectElement();
+        if (selectElement.multiple()) {
+            JTable table = (JTable) ((JScrollPane) getComponent()).getViewport().getView();
+            table.changeSelection(0, 0, false, false);
+        }
+        getComponent().requestFocus();
     }
 }

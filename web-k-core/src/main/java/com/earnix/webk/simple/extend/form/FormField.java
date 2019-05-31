@@ -280,4 +280,9 @@ public abstract class FormField {
     public boolean isRequired() {
         return element.hasAttr("required");
     }
+
+    public void requestFocus()
+    {
+        getComponent().requestFocus();
+    }
 }
