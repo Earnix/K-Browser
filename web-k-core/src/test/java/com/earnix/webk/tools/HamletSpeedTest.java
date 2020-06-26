@@ -28,7 +28,7 @@ public class HamletSpeedTest {
             total += diff;
         }
         long avg = total / 10;
-        log.info("Average : " + avg);
+        log.trace("Average : " + avg);
         assert avg < 8000;
     }
 
