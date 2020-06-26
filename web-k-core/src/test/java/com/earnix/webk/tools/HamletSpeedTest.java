@@ -1,12 +1,14 @@
 package com.earnix.webk.tools;
 
-import com.earnix.webk.simple.Graphics2DRenderer;
-import com.earnix.webk.util.XRLog;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
 
 import java.io.File;
 import java.util.Date;
+
+import org.junit.Assert;
+import org.junit.Test;
+import com.earnix.webk.simple.Graphics2DRenderer;
+import com.earnix.webk.util.XRLog;
 
 @Slf4j
 public class HamletSpeedTest {
@@ -29,7 +31,8 @@ public class HamletSpeedTest {
         }
         long avg = total / 10;
         log.trace("Average : " + avg);
-        assert avg < 8000;
+        Assert.assertTrue("Average : " + avg, avg < 8000);
+        //assert avg < 8000;
     }
 
 }
