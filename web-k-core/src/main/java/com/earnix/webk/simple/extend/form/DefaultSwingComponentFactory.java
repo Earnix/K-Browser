@@ -101,20 +101,7 @@ public class DefaultSwingComponentFactory extends SwingComponentFactory {
 
     @Override
     public FileInputComponent createFileInputComponent(FormField field) {
-        return new FileInputComponent() {
-
-            @Override
-            public String getFilePath() {
-                log.warn("getFilePath unimplemented");
-                return null;
-            }
-
-            @Override
-            public void setFilePath(String path) {
-                log.warn("setFilePath unimplemented");
-            }
-
-        };
+        return new FileComponentImpl();
     }
 
     @Override

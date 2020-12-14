@@ -19,6 +19,8 @@
  */
 package com.earnix.webk.simple.extend.form;
 
+import lombok.val;
+
 import javax.swing.JComponent;
 
 import com.earnix.webk.layout.LayoutContext;
@@ -27,9 +29,12 @@ import com.earnix.webk.runtime.dom.impl.ElementImpl;
 import com.earnix.webk.simple.extend.XhtmlForm;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class FileField extends InputField {
+
+    private FormFieldState preFocusState;
 
     public FileField(ElementImpl e, XhtmlForm form, LayoutContext context, BlockBox box) {
         super(e, form, context, box);
@@ -37,7 +42,10 @@ public class FileField extends InputField {
 
     @Override
     public JComponent create() {
-        return (JComponent) SwingComponentFactory.getInstance().createFileInputComponent(this);
+        preFocusState = getOriginalState();
+        FileComponentImpl fileInputComponent = new FileComponentImpl();
+        fileInputComponent.setOnChangeListener(this::valueChanged);
+        return fileInputComponent;
     }
 
     @Override
@@ -45,7 +53,7 @@ public class FileField extends InputField {
         // This is always the default, since you can't set a default
         // value for this in the HTML
         FileInputComponent com = (FileInputComponent) getComponent();
-        com.setFilePath("");
+        com.setFilePath(com.getFilePath());
     }
 
     @Override
@@ -56,10 +64,20 @@ public class FileField extends InputField {
 
     @Override
     protected Optional<String> validateInternal() {
-        if (StringUtils.isBlank(getFieldValues()[0])) {
+        if (isRequired() && StringUtils.isBlank(getFieldValues()[0])) {
             return Optional.of("File should be selected.");
         } else {
             return  super.validateInternal();
+        }
+    }
+
+    protected void valueChanged(String value) {
+        String fieldValue = getFieldValues()[0];
+        getElement().attr("value", fieldValue);
+
+        if (!Objects.equals(preFocusState.getValue(), fieldValue)) {
+            val scriptContext = getContext().getSharedContext().getCanvas().getScriptContext();
+            scriptContext.getEventManager().onchange(getElement());
         }
     }
 }

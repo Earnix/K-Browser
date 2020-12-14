@@ -73,6 +73,15 @@
                 reportEvent("Input field value changed: " + area.value)
             }
 
+            const optionalFilefield = document.querySelector("#optional-file");
+            optionalFilefield.onchange = function () {
+                reportEvent("Optional file input field value changed: " + optionalFilefield.value)
+            };
+            const requiredFilefield = document.querySelector("#required-file");
+            requiredFilefield.onchange = function () {
+                reportEvent("Required file input field value changed: " + requiredFilefield.value)
+            };
+
             reportSelected(select1)
             select1.onchange = function () {
                 reportSelected(select1)
@@ -159,6 +168,20 @@
 
     <label>Text field
         <input type="text" value="Content"/>
+    </label>
+
+    <br/>
+    <br/>
+
+    <label>File field (optional)
+        <input id="optional-file" type="file"/>
+    </label>
+
+    <br/>
+    <br/>
+
+    <label>File field (required)
+        <input id="required-file" type="file" required/>
     </label>
 
     <br/>
