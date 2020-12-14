@@ -1,4 +1,4 @@
-[![Java CI with Maven](https://github.com/Earnix/Web-K/workflows/Java%20CI%20with%20Maven/badge.svg?branch=master)]
+![Java CI with Maven](https://github.com/Earnix/Web-K/workflows/Java%20CI%20with%20Maven/badge.svg?branch=master)
 
 <p align="center"><img src="/web-k-core/src/main/resources/demos/Web-K.png"></img></p>
 
