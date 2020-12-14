@@ -18,7 +18,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
 
@@ -83,7 +83,7 @@
             <!-- jetty for webserver integration tests. 9.2 is last with Java7 support -->
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>9.4.30.v20200611</version>
+            <version>9.4.35.v20201120</version>
             <scope>test</scope>
         </dependency>
 
