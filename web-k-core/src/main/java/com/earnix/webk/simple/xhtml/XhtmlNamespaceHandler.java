@@ -268,9 +268,5 @@ public class XhtmlNamespaceHandler extends XhtmlCssOnlyNamespaceHandler {
         return (e != null && e.nodeName().equalsIgnoreCase("canvas"));
     }
 
-    @Override
-    public boolean isSvgElement(ElementImpl element) {
-        return (element != null && element.nodeName().equalsIgnoreCase("svg"));
-    }
 }
 

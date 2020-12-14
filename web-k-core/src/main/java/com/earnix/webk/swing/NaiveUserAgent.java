@@ -29,7 +29,6 @@ import com.earnix.webk.runtime.html.impl.DocumentImpl;
 import com.earnix.webk.util.FontUtil;
 import com.earnix.webk.util.ImageUtil;
 import com.earnix.webk.util.XRLog;
-import com.kitfox.svg.SVGCache;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -359,7 +358,6 @@ public class NaiveUserAgent implements UserAgentCallback, DocumentListener {
 
     @Override
     public void clearCaches() {
-        SVGCache.getSVGUniverse().clear();
     }
 
     /**

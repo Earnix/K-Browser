@@ -61,13 +61,6 @@
             <version>6.1.1</version>
         </dependency>
 
-        <!-- Version is a commit revision at https://github.com/blackears/svgSalamander -->
-        <dependency>
-            <groupId>com.kitfox.svg</groupId>
-            <artifactId>svgSalamander</artifactId>
-            <version>d8631188591970d8239cbae2753f3a83e8db5a03</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

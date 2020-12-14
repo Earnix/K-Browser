@@ -148,7 +148,5 @@ public interface NamespaceHandler {
     String getImageSourceURI(ElementImpl e);
 
     boolean isCanvasElement(ElementImpl element);
-
-    boolean isSvgElement(ElementImpl element);
 }
 

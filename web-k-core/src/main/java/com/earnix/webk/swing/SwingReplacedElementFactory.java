@@ -143,8 +143,6 @@ public class SwingReplacedElementFactory implements ReplacedElementFactory {
             
             return new CanvasReplacedElement(canvasElement);
 
-        } else if (context.getNamespaceHandler().isSvgElement(e)) {
-            return new SVGReplacedElement(e, cssWidth, cssHeight);
         } else {
             //form components
             ElementImpl parentForm = getParentForm(e, context);

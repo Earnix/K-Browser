@@ -27,7 +27,6 @@ import com.earnix.webk.resource.XMLResource;
 import com.earnix.webk.runtime.html.impl.DocumentImpl;
 import com.earnix.webk.util.IOUtil;
 import com.earnix.webk.util.StreamResource;
-import com.kitfox.svg.SVGCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
@@ -230,6 +229,5 @@ public class DelegatingUserAgent implements UserAgentCallback, DocumentListener 
 
     @Override
     public void clearCaches() {
-        SVGCache.getSVGUniverse().clear();
     }
 }
