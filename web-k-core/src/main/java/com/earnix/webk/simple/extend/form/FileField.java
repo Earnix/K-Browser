@@ -19,18 +19,14 @@
  */
 package com.earnix.webk.simple.extend.form;
 
-import lombok.val;
-
+import java.util.Optional;
 import javax.swing.JComponent;
 
+import org.apache.commons.lang3.StringUtils;
 import com.earnix.webk.layout.LayoutContext;
 import com.earnix.webk.render.BlockBox;
 import com.earnix.webk.runtime.dom.impl.ElementImpl;
 import com.earnix.webk.simple.extend.XhtmlForm;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Objects;
-import java.util.Optional;
 
 public class FileField extends InputField {
 
@@ -43,7 +39,7 @@ public class FileField extends InputField {
     @Override
     public JComponent create() {
         preFocusState = getOriginalState();
-        FileComponentImpl fileInputComponent = new FileComponentImpl();
+        FileInputComponent fileInputComponent = SwingComponentFactory.getInstance().createFileInputComponent(this);
         fileInputComponent.setOnChangeListener(this::valueChanged);
         return fileInputComponent;
     }
@@ -53,7 +49,7 @@ public class FileField extends InputField {
         // This is always the default, since you can't set a default
         // value for this in the HTML
         FileInputComponent com = (FileInputComponent) getComponent();
-        com.setFilePath(com.getFilePath());
+        com.setFilePath(getOriginalState().getValue());
     }
 
     @Override
@@ -74,10 +70,5 @@ public class FileField extends InputField {
     protected void valueChanged(String value) {
         String fieldValue = getFieldValues()[0];
         getElement().attr("value", fieldValue);
-
-        if (!Objects.equals(preFocusState.getValue(), fieldValue)) {
-            val scriptContext = getContext().getSharedContext().getCanvas().getScriptContext();
-            scriptContext.getEventManager().onchange(getElement());
-        }
     }
 }

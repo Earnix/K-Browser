@@ -1,11 +1,19 @@
 package com.earnix.webk.simple.extend.form;
 
+import java.awt.LayoutManager;
 import java.util.function.Consumer;
+import javax.swing.JPanel;
 
-public interface FileInputComponent {
-    String getFilePath();
+public abstract class FileInputComponent extends JPanel
+{
+    public FileInputComponent(LayoutManager layout)
+    {
+        super(layout);
+    }
 
-    void setFilePath(String path);
+    public abstract String getFilePath();
 
-    void setOnChangeListener(Consumer<String> onChangeConsumer);
+    public abstract void setFilePath(String path);
+
+    public abstract void setOnChangeListener(Consumer<String> onChangeConsumer);
 }

@@ -9,12 +9,11 @@ import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class FileComponentImpl extends JPanel implements FileInputComponent
+public class FileComponentImpl extends FileInputComponent
 {
 	private String path;
 	private final JTextField textField;
