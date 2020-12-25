@@ -1,0 +1,50 @@
+<html>
+<head>
+    <title>Alerts</title>
+    <link rel="stylesheet" type="text/css" href="../../rendering/general.css" title="Style" media="screen"/>
+    <script>
+
+        var lorem =
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+        var loremIndex = 0;
+
+        window.setInterval(function () {
+            var loremElement = document.getElementById("lorem");
+            loremElement.textContent = loremElement.textContent + " " + (lorem.split(" ")[loremIndex] || "");
+            loremIndex++;
+        }, 300);
+
+        window.setTimeout(function () {
+            var div = document.createElement("div");
+            div.style.color = "red";
+            div.style.padding = "20px";
+            div.textContent = "3 seconds timeout elapsed!"
+            document.body.appendChild(div);
+        }, 3000);
+
+    </script>
+</head>
+
+<body>
+<h1>Interval, timeout</h1>
+
+<p>
+    Executing following JS:
+</p>
+<pre style="padding: 10px">
+    window.setInterval(function () {
+        // appending text
+    }, 300);
+    
+    window.setTimeout(function () {
+        // appnding message about elapsed time
+    }, 3000);
+    
+</pre>
+
+<p class="link left-link"><a href="demo:demos/scripting/ES5/chartjs/index.html">Previous Page</a></p>
+<p class="link right-link"><a href="demo:demos/scripting/ES5/dom-manipulations.html">Next Page</a></p>
+<!--<button>Show alerts</button>-->
+<div id="lorem"/>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../../rendering/general.css" title="Style" media="screen"/>
+    <script>
+		fragmentNumber = 0;
+
+        window.onload = function () {
+            var button = document.querySelector("button");
+            var content = document.querySelector("#response");
+
+			var request;
+            function onGet() {
+            	console.log("on get")
+                content.innerHTML = request.responseText;
+                fragmentNumber = 1 - fragmentNumber;
+                console.log("fragment number on get = ", fragmentNumber)
+                button.textContent = "Load fragment " + (fragmentNumber + 1);
+            }
+            button.onclick = function () {
+                request = new XMLHttpRequest();
+                var url = fragmentNumber === 0 ? "xhr/fragment1.html" : "xhr/fragment2.html";
+				console.log("fragment number on click = ", fragmentNumber)
+                console.log(url);
+				console.log(onGet)
+                request.addEventListener("load", onGet);
+                request.open("GET", url);
+                request.send();
+            };
+        };
+
+    </script>
+
+</head>
+<body>
+
+<p class="link left-link"><a href="demo:demos/scripting/ES5/mouse-events.html">Previous Page</a></p>
+<p class="link right-link"><a href="demo:demos/index.html">Home</a></p>
+
+<h1>AJAX Example</h1>
+<p>Web-K supports AJAX via basic XMLHttpRequest implementation. Use following code to send GET request:</p>
+<pre>
+var request = new XMLHttpRequest();
+var url = ...
+request.addEventListener("load", function(){
+    // And do whatever whatever is needed with response.
+    var element = document.createElement("div");
+    element.innerHTML = request.responseText;
+    document.body.appendChild(element);
+});
+request.open("GET", url);
+request.send();
+</pre>
+<br>
+<button>
+    Load fragment 1
+</button>
+<div id="response"></div>
+</body>
+</html>

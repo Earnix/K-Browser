@@ -1,0 +1,137 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../../rendering/general.css" title="Style" media="screen"/>
+    <script>
+        var arcsDrawer = function (ctx) {
+
+            ctx.beginPath();
+            ctx.rect(0, 0, 150, 200);
+            ctx.stroke();
+            for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 3; j++) {
+                    ctx.beginPath();
+
+                    var x = 25 + j * 50; // x coordinate
+                    var y = 25 + i * 50; // y coordinate
+                    var radius = 20; // Arc radius
+                    var startAngle = 0; // Starting point on circle
+                    var endAngle = Math.PI + (Math.PI * j) / 2; // End point on circle
+                    var anticlockwise = i % 2 !== 0; // clockwise or anticlockwise
+
+                    ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+
+                    if (i > 1) {
+                        ctx.fill();
+                    } else {
+                        ctx.stroke();
+                    }
+                }
+            }
+        };
+
+        var beizer = function (ctx) {
+            // Quadratric curves example
+            ctx.beginPath();
+            ctx.moveTo(75, 25);
+            ctx.quadraticCurveTo(25, 25, 25, 62.5);
+            ctx.quadraticCurveTo(25, 100, 50, 100);
+            ctx.quadraticCurveTo(50, 120, 30, 125);
+            ctx.quadraticCurveTo(60, 120, 65, 100);
+            ctx.quadraticCurveTo(125, 100, 125, 62.5);
+            ctx.quadraticCurveTo(125, 25, 75, 25);
+            ctx.stroke();
+        };
+
+        window.onload = function () {
+            var canvas = document.getElementById("cid");
+            console.log(canvas)
+            var ctx = canvas.getContext("2d", null);
+					console.log(ctx)
+            ctx.fillStyle = "#c6c5af";
+            ctx.fillRect(0, 0, 800, 800);
+
+            ctx.fillStyle = "#B10DC9";
+            ctx.fillRect(10, 10, 20, 20);
+
+            ctx.strokeStyle = "#3D9970";
+            ctx.lineWidth = 5.0;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(500, 100);
+            ctx.rect(40, 100, 200, 300);
+            ctx.closePath();
+            ctx.stroke();
+
+
+            ctx.lineWidth = 2.0;
+            ctx.fillStyle = "#FF851B";
+            ctx.beginPath();
+            ctx.moveTo(520, 170);
+            ctx.lineTo(550, 250);
+            ctx.lineTo(600, 230);
+            ctx.lineTo(520, 170);
+            ctx.rect(500, 300, 100, 150);
+            ctx.closePath();
+            ctx.fill();
+
+            console.log("Measured text: " + ctx.measureText("Hello"));
+
+            ctx.beginPath();
+            ctx.arc(95, 50, 40, 0, 2 * Math.PI, false);
+            ctx.stroke();
+
+            ctx.beginPath();
+
+            ctx.translate(300, 300);
+
+            ctx.arc(75, 75, 50, 0, Math.PI * 2, true); // Outer circle
+            ctx.moveTo(110, 75);
+            ctx.arc(75, 75, 35, 0, Math.PI, false);  // Mouth (clockwise)
+            ctx.moveTo(65, 65);
+            ctx.arc(60, 65, 5, 0, Math.PI * 2, true);  // Left eye
+            ctx.moveTo(95, 65);
+            ctx.arc(90, 65, 5, 0, Math.PI * 2, true);  // Right eye
+            ctx.stroke();
+
+
+            ctx.translate(0, 170);
+
+            // Filled triangle
+            ctx.fillStyle = "#85144b";
+            ctx.beginPath();
+            ctx.moveTo(25, 25);
+            ctx.lineTo(105, 25);
+            ctx.lineTo(25, 105);
+            ctx.fill();
+
+            // Stroked triangle
+            ctx.strokeStyle = "#85144b";
+
+            ctx.beginPath();
+            ctx.moveTo(125, 125);
+            ctx.lineTo(125, 45);
+            ctx.lineTo(45, 125);
+            ctx.closePath();
+            ctx.stroke();
+
+            ctx.translate(-200, 0);
+            arcsDrawer(ctx);
+
+            ctx.translate(400, 0);
+            beizer(ctx);
+        };
+    </script>
+</head>
+
+<body>
+<h1>Canvas</h1>
+<p class="link left-link"><a href="demo:demos/scripting/ES5/alerts.html">Previous Page</a></p>
+<p class="link right-link"><a href="demo:demos/scripting/ES5/chartjs/index.html">Next Page</a></p>
+<p style="text-align: center; width: 100%;">
+    <canvas id="cid" width="700" height="700"></canvas>
+</p>
+<p id="lorem">
+</p>
+</body>
+</html>

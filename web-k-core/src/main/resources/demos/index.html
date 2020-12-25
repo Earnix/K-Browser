@@ -2,6 +2,10 @@
 <head>
     <style>
 
+        .hidden {
+            display: none;
+        }
+
         .logo-wrap {
             text-align: center;
             width: 100%;
@@ -28,6 +32,16 @@
         /*}*/
     </style>
     <link rel="stylesheet" type="text/css" href="rendering/general.css" title="Style" media="screen"/>
+    <script>
+			window.onload = function () {
+				try {
+					eval("let es6=true") // check if ES6 features are enabled.
+				} catch(e) {
+                   var es6Demo = document.getElementById("es6_demo_link")
+				   es6Demo.classList.add("hidden")
+                }
+			}
+	</script>
 </head>
 <body>
 
@@ -35,7 +49,8 @@
 
 <ul>
     <li><a href="demo:demos/rendering/formatted-text.xhtml">Rendering features demo</a></li>
-    <li id="es6_demo_link"><a href="demo:demos/scripting/ES6/alerts.html">Scripting features demo (ES6)</a></li>
+    <li id="es6_demo_link"><a href="demo:demos/scripting/ES6/alerts.html">Scripting features demo (Nashorn ES6)</a></li>
+    <li ><a href="demo:demos/scripting/ES5/alerts.html">Scripting features demo (Nashorn EcmaScript2015)</a></li>
 </ul>
 
 

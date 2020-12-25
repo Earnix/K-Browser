@@ -1,0 +1,91 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../../rendering/general.css" title="Style" media="screen"/>
+
+    <style>
+        #target {
+            background-color: #1e880b;
+            font-size: 15px;
+            display: block;
+            width: 100px;
+            height: 100px;
+            box-sizing: border-box;
+        }
+    </style>
+    <script>
+
+        function reportEvent(message) {
+            var p = document.createElement("p");
+            p.textContent = message;
+            var report = document.querySelector("#report");
+            if (report.childElementCount > 20) {
+                report.removeChild(report.children[report.children.length - 1])
+            }
+            report.prepend(p);
+        }
+        
+        window.onload = function () {
+            var div = document.querySelector("div#target");
+
+            div.onclick = function (event) {
+                reportEvent("Click at " + event.clientX + " " + event.clientY);
+            };
+
+            div.ondblclick = function (event) {
+                reportEvent("Double click at " + event.clientX + " " + event.clientY);
+            };
+
+            div.onmouseenter = function (event) {
+                reportEvent("Mouse entered at " + event.clientX + " " + event.clientY);
+            };
+
+            div.onmouseover = function (event) {
+                reportEvent("Mouse over at " + event.clientX + " " + event.clientY);
+            };
+
+            div.onmouseleave = function (event) {
+                reportEvent("Mouse leaved at " + event.clientX + " " + event.clientY);
+            };
+
+            div.onmouseout = function (event) {
+                reportEvent("Mouse out at " + event.clientX + " " + event.clientY);
+            };
+
+            div.onmousedown = function (event) {
+                reportEvent("Mouse down at " + event.clientX + " " + event.clientY);
+            };
+
+            div.onmouseup = function (event) {
+                reportEvent("Mouse up at " + event.clientX + " " + event.clientY);
+            };
+
+            div.onmousemove = function (event) {
+                reportEvent("Mouse moved at " + event.clientX + " " + event.clientY);
+            };
+        }
+
+    </script>
+
+</head>
+
+<body>
+<p class="link left-link"><a href="demo:demos/scripting/ES5/dom-manipulations.html">Previous Page</a></p>
+<p class="link right-link"><a href="demo:demos/scripting/ES5/input-change-event.html">Next Page</a></p>
+<h1>Mouse events</h1>
+<p>Web-K supports mouse events like:</p>
+<ul>
+    <li>mouseenter</li>
+    <li>mouseover</li>
+    <li>mouseleave</li>
+    <li>mouseout</li>
+    <li>click</li>
+    <li>dblclick</li>
+    <li>mousemove</li>
+    <li>mouseup</li>
+    <li>mousedown</li>
+</ul>
+<p>You can test it on following element:</p>
+<div id="target"></div>
+<div id="report"></div>
+</body>
+</html>

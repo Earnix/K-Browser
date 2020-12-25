@@ -1,0 +1,188 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../../rendering/general.css" title="Style" media="screen"/>
+
+    <style>
+
+    </style>
+    <script>
+
+        function reportEvent(message) {
+            var p = document.createElement("p");
+            p.textContent = message;
+            var report = document.querySelector("#report");
+            if (report.childElementCount > 5) {
+                report.children[report.children.length - 1].remove();
+            }
+            report.prepend(p);
+        }
+
+        function reportSelected(selectElement)
+        {
+            var index = selectElement.selectedIndex
+            reportEvent("Select field value changed: " +
+                        "[ selected index: " + index +
+                        ", selected value: " + selectElement.value + "]"
+            )
+        }
+
+        function reportMultiSelected(selectElement)
+        {
+            var options  = selectElement.selectedOptions;
+            var vals = [];
+            for(i=0;i<options.length;i++)
+            {
+                vals.push(options.item(i).value)
+            }
+            reportEvent("Select-multi field value changed: [" + vals + "]"
+            )
+        }
+
+        window.onload = function () {
+
+            var select1 = document.querySelector("#select1")
+            var select2 = document.querySelector("#select2")
+            var select3 = document.querySelector("#select3")
+
+            var radio1 = document.querySelector("#radio1");
+            radio1.onchange = function () {
+                reportEvent("Option 1 selected: " + !!radio1.checked)
+            };
+
+            var radio2 = document.querySelector("#radio2");
+            radio2.onchange = function () {
+                reportEvent("Option 2 selected: " + !!radio2.checked)
+            };
+
+            var checkbox = document.querySelector("input[type=checkbox]");
+            checkbox.onchange = function () {
+                reportEvent("Checkbox selected: " + !!checkbox.checked)
+            };
+
+            var field = document.querySelector("input[type=text]");
+            field.onchange = function () {
+                reportEvent("Input field value changed: " + field.value)
+            };
+
+            // field.oninput = function () {
+            //     reportEvent("Input field value input: " + field.value)
+            // };
+
+            var area = document.querySelector("textarea");
+            area.onchange = function () {
+                reportEvent("Input field value changed: " + area.value)
+            }
+
+            reportSelected(select1)
+            select1.onchange = function () {
+                reportSelected(select1)
+            }
+
+            reportSelected(select3)
+            select1.onchange = function () {
+                reportSelected(select3)
+            }
+
+            reportMultiSelected(select2)
+            select2.onchange = function () {
+                reportMultiSelected(select2)
+            }
+        }
+
+    </script>
+
+</head>
+
+<body>
+<p class="link left-link"><a href="demo:demos/ES5/mouse-events.html">Previous Page</a></p>
+<p class="link right-link"><a href="demo:demos/scripting/ES5/xmlhttprequest.html">Next Page</a></p>
+<h1>Input change events</h1>
+<p>Web-K supports change listening on input elements.</p>
+<form action="#">
+    <label for="radio1">Option 1
+        <input id="radio1" name="option" type="radio"/>
+    </label>
+
+    <br/>
+    <br/>
+
+    <label for="radio2">Option 2
+        <input id="radio2" name="option" type="radio"/>
+    </label>
+
+    <br/>
+    <br/>
+
+    <label>
+        <input type="checkbox"/>
+    </label>Checkbox
+
+    <br/>
+    <br/>
+
+    <label>Select option with placeholder:</label>
+    <select id="select1" required>
+        <option value="" selected>Select an option</option>
+        <option value="value1">text1</option>
+        <option value="value2">text2</option>
+        <option value="value3">text3</option>
+        <option value="value4">text4</option>
+    </select>
+
+    <br/>
+    <br/>
+
+
+    <label>Select option without placeholder:</label>
+    <select id="select3" required>
+        <option value="value1">text1</option>
+        <option value="value2">text2</option>
+        <option value="value3">text3</option>
+        <option value="value4">text4</option>
+    </select>
+
+    <br/>
+    <br/>
+
+    <label>Select multiple option:</label>
+    <select id="select2" multiple size="5" required>
+            <option value="multi1">multi1</option>
+            <option value="multi2">multi2</option>
+            <option value="multi3">multi3</option>
+            <option value="multi4">multi4</option>
+            <option value="multi5">multi5</option>
+            <option value="multi6">multi6 option</option>
+    </select>
+
+    <br/>
+    <br/>
+
+    <label>Text field
+        <input type="text" value="Content"/>
+    </label>
+
+    <br/>
+    <br/>
+
+    <label>File field (optional)
+        <input id="optional-file" type="file"/>
+    </label>
+
+    <br/>
+    <br/>
+
+    <label>File field (required)
+        <input id="required-file" type="file" required/>
+    </label>
+
+    <br/>
+    <br/>
+
+    <label>Text area
+        <textarea style="width: 200px; height: 200px;">Content</textarea>
+    </label><br/>
+    <input type="submit" value="Validate fields">
+</form>
+<div id="report"></div>
+</body>
+</html>

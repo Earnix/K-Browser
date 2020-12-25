@@ -1,0 +1,30 @@
+<html>
+<head>
+    <title>Alerts</title>
+    <link rel="stylesheet" type="text/css" href="../../rendering/general.css" title="Style" media="screen"/>
+    <script>
+        document.querySelector("button").onclick = function () {
+            alert("Hello!");
+            var sure = confirm("Are you sure?");
+            var why = prompt("Why?");
+            alert("You are" + (sure ? " " : " not ") + "sure because " + why + "!");
+        };
+    </script>
+</head>
+
+<body>
+<h1>Alerts</h1>
+<p class="link left-link"><a href="demo:demos/index.html">Home</a></p>
+<p class="link right-link"><a href="demo:demos/scripting/ES5/canvas.html">Next Page</a></p>
+<p>
+    Press "Start" to execute following JavaScript:
+</p>
+<pre style="padding: 10px">
+alert(...);
+var sure = confirm(...);
+var why = prompt(...);
+alert(...);
+</pre>
+<button>Start</button>
+</body>
+</html>

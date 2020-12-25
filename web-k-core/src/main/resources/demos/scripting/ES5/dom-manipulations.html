@@ -1,0 +1,86 @@
+<html>
+<head>
+    <title>Alerts</title>
+    <link rel="stylesheet" type="text/css" href="../../rendering/general.css" title="Style" media="screen"/>
+    <style>
+        .large {
+            font-size: 25px;
+        }
+    </style>
+    <script>
+
+        window.onload = function ()
+        {
+            window.step = 0;
+            var button = document.querySelector("#actor");
+            button.onclick = function () {
+                if (window.step === 0) {
+                    var div = document.createElement("div");
+                    div.textContent = "Element text content";
+                    document.body.appendChild(div);
+                    button.textContent = "Step 2. Locate element and update styles.";
+                    window.step = 1;
+                } else if (window.step === 1) {
+                    var div = document.querySelector("div");
+                    div.style.padding = "20px";
+                    div.style.backgroundColor = "#9f9f9f";
+                    div.style.color = "blue";
+                    button.textContent = "Step 3. Modify element class list";
+                    window.step = 2;
+                } else if (window.step === 2) {
+                    var div = document.querySelector("div");
+                    div.classList.add("large");
+                    button.textContent = "Step 4. Remove element.";
+                    window.step = 3;
+                } else if (window.step === 3) {
+                    var div = document.querySelector("div");
+                    div.remove();
+                    button.remove();
+                }
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+<h1>DOM manipulations</h1>
+<p>
+    Executing following JS:
+</p>
+<ul>
+    <li>Step 1
+        <pre style="padding: 10px">
+            var div = document.createElement("div");
+            document.body.appendChild(div)
+        </pre>
+    </li>
+    <li>Step 2
+        <pre style="padding: 10px">
+            var div = document.querySelector("div");
+            div.style.padding = "20px";
+            div.style.backgroundColor = "#9f9f9f";
+            div.style.color = "blue";
+        </pre>
+    </li>
+    <li>Step 3
+        <pre style="padding: 10px">
+            var div = document.querySelector("div");
+            div.classList.add("large");
+        </pre>
+    </li>
+    <li>Step 4
+        <pre style="padding: 10px">
+            var div = document.querySelector("div");
+            div.remove();
+        </pre>
+    </li>
+</ul>
+
+
+<p class="link left-link"><a href="demo:demos/scripting/ES5/interval-timeout.html">Previous Page</a></p>
+<p class="link right-link"><a href="demo:demos/scripting/ES5/mouse-events.html">Next Page</a></p>
+
+<button id="actor">Step 1. Create and append element.</button>
+</body>
+</html>
