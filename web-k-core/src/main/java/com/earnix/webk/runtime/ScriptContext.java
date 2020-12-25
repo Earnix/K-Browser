@@ -32,7 +32,10 @@ import org.apache.commons.lang3.StringUtils;
 import javax.script.ScriptException;
 import javax.swing.SwingUtilities;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
+import static com.earnix.webk.util.GeneralUtil.isJavascriptES6;
 import static javax.script.ScriptContext.ENGINE_SCOPE;
 
 /**
@@ -149,9 +152,16 @@ public class ScriptContext implements DocumentListener {
     }
 
     private void initEngine() {
-        String[] options = {"--language=es6", "--no-java"};
+        List<String> options = new ArrayList<>();
+        options.add("--no-java");
+
+        if(isJavascriptES6())
+        {
+            options.add("--language=es6");
+        }
+
         NashornScriptEngineFactory jsFactory = new NashornScriptEngineFactory();
-        engine = (NashornScriptEngine) jsFactory.getScriptEngine(options);
+        engine = (NashornScriptEngine) jsFactory.getScriptEngine(options.toArray(new String[options.size()]));
         context = engine.getContext();
 
         expose(CanvasGradientImpl.class);
@@ -313,7 +323,8 @@ public class ScriptContext implements DocumentListener {
      */
     private void synchronize() {
         try {
-            engine.eval("this.__keys = Object.keys(this); for (let i = 0; i < __keys.length; i++) { if (this[__keys[i]]) this.__win[__keys[i]] = this[__keys[i]]; }");
+            engine.eval("this.__keys = Object.keys(this); for (var i = 0; i < __keys.length; i++) { var tempI = i; if "
+                    + "(this[__keys[tempI]]) this.__win[__keys[tempI]] = this[__keys[tempI]]; }");
         } catch (ScriptException e) {
             throw new RuntimeException(e);
         }

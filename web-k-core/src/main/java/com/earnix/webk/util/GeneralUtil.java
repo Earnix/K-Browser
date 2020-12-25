@@ -212,6 +212,23 @@ public class GeneralUtil {
         return false;
     }
 
+    /**
+     * Checks if ES6 is enabled for Javascript engine. Default: {@code true}.
+     * <br>System property: {@code webk.runtime.es6}
+     * @return status of boolean system property {@code webk.javascript.es6}. true - if system property is not
+     * specified.
+     */
+    public static boolean isJavascriptES6()
+    {
+        try {
+            String supportES6 = System.getProperty("webk.javascript.es6", "true");
+            return Boolean.valueOf(supportES6);
+        } catch (SecurityException e) {
+            System.err.println(e.getLocalizedMessage());
+        }
+        return true;
+    }
+
     public static StringBuffer htmlEscapeSpace(String uri) {
         StringBuffer sbURI = new StringBuffer((int) (uri.length() * 1.5));
         char ch;
