@@ -149,7 +149,7 @@ public class WebKApplication {
     class FrameBrowserPanelListener implements BrowserPanelListener {
 
         public void pageLoadSuccess(String url, String title) {
-            String esComment = GeneralUtil.isJavascriptES6() ? "(Nashorn ES6)" : "(Nashorn EcmaScript2015)";
+            String esComment = GeneralUtil.getJavascriptES6Status() ? "(Nashorn ES6)" : "(Nashorn EcmaScript2015)";
             frame.setTitle(title + (title.length() > 0 ? " - " : "") + "Web-K Browser " + esComment);
         }
     }

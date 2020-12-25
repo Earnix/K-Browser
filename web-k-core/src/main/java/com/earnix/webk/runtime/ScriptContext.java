@@ -35,7 +35,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.earnix.webk.util.GeneralUtil.isJavascriptES6;
+import static com.earnix.webk.util.GeneralUtil.getJavascriptES6Status;
 import static javax.script.ScriptContext.ENGINE_SCOPE;
 
 /**
@@ -155,7 +155,7 @@ public class ScriptContext implements DocumentListener {
         List<String> options = new ArrayList<>();
         options.add("--no-java");
 
-        if(isJavascriptES6())
+        if(getJavascriptES6Status())
         {
             options.add("--language=es6");
         }

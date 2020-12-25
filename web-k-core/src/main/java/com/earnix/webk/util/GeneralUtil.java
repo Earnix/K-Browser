@@ -47,6 +47,8 @@ public class GeneralUtil {
      */
     public final static java.text.DecimalFormat PADDED_HASH_FORMAT = new java.text.DecimalFormat("0000000000");
 
+    private final static String JAVASCRIPT_ES6_PROPERTY = "webk.javascript.es6";
+
     public static InputStream openStreamFromClasspath(Object obj, String resource) {
         InputStream readStream = null;
         try {
@@ -218,15 +220,25 @@ public class GeneralUtil {
      * @return status of boolean system property {@code webk.javascript.es6}. true - if system property is not
      * specified.
      */
-    public static boolean isJavascriptES6()
+    public static boolean getJavascriptES6Status()
     {
         try {
-            String supportES6 = System.getProperty("webk.javascript.es6", "true");
+            String supportES6 = System.getProperty(JAVASCRIPT_ES6_PROPERTY, "true");
             return Boolean.valueOf(supportES6);
         } catch (SecurityException e) {
             System.err.println(e.getLocalizedMessage());
         }
         return true;
+    }
+
+    /**
+     * Configure system property {@code webk.javascript.es6}. The method doesnt affect the execution javascript
+     * runtime engine but only new one.
+     * @param enable
+     */
+    public static void setJavascritES6Status(boolean enable)
+    {
+        System.setProperty(JAVASCRIPT_ES6_PROPERTY, String.valueOf(enable));
     }
 
     public static StringBuffer htmlEscapeSpace(String uri) {
