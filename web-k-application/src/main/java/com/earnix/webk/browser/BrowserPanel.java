@@ -53,6 +53,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -157,9 +158,11 @@ public class BrowserPanel extends JPanel implements DocumentListener {
 
     private void loadCustomFonts() {
         SharedContext rc = view.getSharedContext();
-        try {
-            rc.setFontMapping("Fuzz", Font.createFont(Font.TRUETYPE_FONT,
-                    DemoMarker.class.getClass().getResourceAsStream("/demos/rendering/fonts/fuzz.ttf")));
+        try
+        {
+            ClassLoader classLoader = getClass().getClassLoader();
+            InputStream fontFileStream = classLoader.getResourceAsStream("demos/rendering/fonts/fuzz.ttf");
+            rc.setFontMapping("Fuzz", Font.createFont(Font.TRUETYPE_FONT, fontFileStream));
         } catch (Exception ex) {
             log.error("loadCustomFonts", ex);
         }

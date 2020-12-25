@@ -40,6 +40,9 @@ import java.util.logging.Level;
 @Getter
 public class WebKApplication {
 
+    private final static String UI_SCALE_ENABLED_PROP = "sun.java2d.uiScale.enabled";
+
+
     BrowserActions actions;
     ValidationHandler validationHandler = new ValidationHandler();
     BrowserMenuBar menu;
@@ -104,6 +107,10 @@ public class WebKApplication {
     }
 
     public static void main(final String[] args) {
+        if (System.getProperty(UI_SCALE_ENABLED_PROP) == null)
+        {
+            System.setProperty(UI_SCALE_ENABLED_PROP, "false");
+        }
         EventQueue.invokeLater(() -> {
             final WebKApplication bs = new WebKApplication();
             bs.initUI();
@@ -142,7 +149,8 @@ public class WebKApplication {
     class FrameBrowserPanelListener implements BrowserPanelListener {
 
         public void pageLoadSuccess(String url, String title) {
-            frame.setTitle(title + (title.length() > 0 ? " - " : "") + "Web-K Browser");
+            String esComment = GeneralUtil.isJavascriptES6() ? "(Nashorn ES6)" : "(Nashorn EcmaScript2015)";
+            frame.setTitle(title + (title.length() > 0 ? " - " : "") + "Web-K Browser " + esComment);
         }
     }
 }
