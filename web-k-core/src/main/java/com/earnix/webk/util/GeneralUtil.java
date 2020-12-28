@@ -47,7 +47,7 @@ public class GeneralUtil {
      */
     public final static java.text.DecimalFormat PADDED_HASH_FORMAT = new java.text.DecimalFormat("0000000000");
 
-    private final static String JAVASCRIPT_ES6_PROPERTY = "webk.javascript.es6";
+    public final static String JAVASCRIPT_ES6_PROPERTY = "webk.javascript.es6";
 
     public static InputStream openStreamFromClasspath(Object obj, String resource) {
         InputStream readStream = null;
