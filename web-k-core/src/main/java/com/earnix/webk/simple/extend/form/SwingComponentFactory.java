@@ -5,6 +5,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -33,6 +34,8 @@ public abstract class SwingComponentFactory {
     public abstract JComboBox createComboBox(FormField field, List<NameValuePair> optionList);
 
     public abstract JTable createMultipleOptionsList(FormField field, List<NameValuePair> optionList, int size);
+
+    public abstract JPanel createMultipleOptionsListPanel(JTable listTable, JScrollPane listScrollPane);
 
     public abstract JButton createButton(FormField field);
 

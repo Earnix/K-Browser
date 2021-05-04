@@ -74,7 +74,7 @@ public class SelectField extends FormField {
             scrollPane.setPreferredSize(new Dimension(preferredSize.width, size * select.getRowHeight()));
             scrollPane.getVerticalScrollBar().addAdjustmentListener(scrollListener = evt -> adjustScrollPosition(evt));
             scrollPane.getHorizontalScrollBar().addAdjustmentListener(scrollListener);
-            return scrollPane;
+            return SwingComponentFactory.getInstance().createMultipleOptionsListPanel(select, scrollPane);
         } else {
             JComboBox comboBox = SwingComponentFactory.getInstance().createComboBox(this, optionList);
             comboBox.addItemListener(selectOneItemListener = e -> {

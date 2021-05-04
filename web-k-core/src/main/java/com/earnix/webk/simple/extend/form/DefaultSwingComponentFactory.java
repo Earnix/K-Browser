@@ -9,6 +9,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -16,6 +17,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+import java.awt.BorderLayout;
 import java.util.List;
 
 @Slf4j
@@ -59,6 +61,14 @@ public class DefaultSwingComponentFactory extends SwingComponentFactory {
         JComboBox combo = new JComboBox();
         combo.setModel(model);
         return combo;
+    }
+
+    @Override
+    public JPanel createMultipleOptionsListPanel(JTable listTable, JScrollPane listScrollPane)
+    {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(listScrollPane, BorderLayout.CENTER);
+        return panel;
     }
 
     @Override public JTable createMultipleOptionsList(FormField field, List<NameValuePair> optionList, int size)
