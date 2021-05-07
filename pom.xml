@@ -6,7 +6,7 @@
 
     <groupId>com.earnix.webk</groupId>
     <artifactId>web-k-parent</artifactId>
-    <version>1.0.13</version>
+    <version>1.0.14-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
