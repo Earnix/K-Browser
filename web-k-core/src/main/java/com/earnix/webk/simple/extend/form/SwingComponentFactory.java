@@ -35,6 +35,11 @@ public abstract class SwingComponentFactory {
 
     public abstract JTable createMultipleOptionsList(FormField field, List<NameValuePair> optionList, int size);
 
+    /**
+     * @return Parent panel for the scroll pane of the multiple options list component.
+     * @see #createScrollPane(FormField)
+     * @see #createMultipleOptionsList
+     */
     public abstract JPanel createMultipleOptionsListPanel(JTable listTable, JScrollPane listScrollPane);
 
     public abstract JButton createButton(FormField field);

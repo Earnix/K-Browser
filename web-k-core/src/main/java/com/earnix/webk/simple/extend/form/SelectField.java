@@ -34,12 +34,14 @@ import lombok.val;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import java.awt.Adjustable;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -47,6 +49,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class SelectField extends FormField {
@@ -144,11 +147,27 @@ public class SelectField extends FormField {
         return FormFieldState.fromList(selectedIndices, scrollTop.get(), scrollLeft.get());
     }
 
+    private JScrollPane getMultipleOptionsListScrollPane()
+    {
+        assert shouldRenderAsList();
+        JPanel panel = (JPanel) getComponent();
+        JScrollPane sp = null;
+        for (int i = 0; i < panel.getComponentCount(); i++)
+        {
+            Component c = panel.getComponent(i);
+            if (c instanceof JScrollPane)
+            {
+                sp = (JScrollPane) c;
+            }
+        }
+        return Objects.requireNonNull(sp);
+    }
+
     @Override
     protected void applyOriginalState() {
         FormFieldState originalState = getOriginalState();
         if (shouldRenderAsList()) {
-            JScrollPane component = (JScrollPane) getComponent();
+            JScrollPane component = getMultipleOptionsListScrollPane();
             component.getVerticalScrollBar().removeAdjustmentListener(scrollListener);
             component.getHorizontalScrollBar().removeAdjustmentListener(scrollListener);
             JTable table = (JTable) (component).getViewport().getView();
@@ -253,7 +272,7 @@ public class SelectField extends FormField {
     {
         HTMLSelectElement selectElement = getSelectElement();
         if (selectElement.multiple()) {
-            JTable table = (JTable) ((JScrollPane) getComponent()).getViewport().getView();
+            JTable table = (JTable) getMultipleOptionsListScrollPane().getViewport().getView();
             table.changeSelection(0, 0, false, false);
         }
         getComponent().requestFocus();
